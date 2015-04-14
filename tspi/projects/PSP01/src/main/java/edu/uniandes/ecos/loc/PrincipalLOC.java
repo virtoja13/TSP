@@ -3,11 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.uniandes.ecos.controlador;
-
-import edu.uniandes.ecos.modelo.Data.DataEjercicio1_DatosClase;
-import edu.uniandes.ecos.modelo.Data.DataEjercicio1_DatosProyecto;
-import edu.uniandes.ecos.modelo.Data.Logica.LogicaEjercicio1_Contador;
+package edu.uniandes.ecos.loc;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -18,19 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
 /**
  *
  * @author JAVIER
  */
-public class LectorDeArchivos extends HttpServlet{
+public class PrincipalLOC extends HttpServlet {
+        
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
         mostrarLineas(req, resp);
     }
     
     private void mostrarLineas(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-        LogicaEjercicio1_Contador contador = new LogicaEjercicio1_Contador();
-        ArrayList<DataEjercicio1_DatosProyecto> listaProyectos = contador.conteoArchivos("projects");
+        Contador contador = new Contador();
+        ArrayList<DatosProyecto> listaProyectos = contador.conteoArchivos("projects");
         PrintWriter out = resp.getWriter();
         out.println("<html>");
         out.println("<body>");
@@ -41,11 +39,11 @@ public class LectorDeArchivos extends HttpServlet{
         out.println("<th>Numero Lineas</th>");
         out.println("<th>Numero Metodos</th>");
         out.println("</tr>");
-        for(DataEjercicio1_DatosProyecto proyecto: listaProyectos){
+        for(DatosProyecto proyecto: listaProyectos){
             int i = 0;
             out.println("<tr align='center'>");
             out.println("<td>"+proyecto.getNombreProyecto()+"</td>");
-            for(DataEjercicio1_DatosClase datosClase: proyecto.getDatosClase()){
+            for(DatosClase datosClase: proyecto.getDatosClase()){
                 if(i>0){
                     out.println("<tr align='center'>");
                     out.println("<td></td>");
@@ -68,8 +66,10 @@ public class LectorDeArchivos extends HttpServlet{
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
-        context.addServlet(new ServletHolder(new LectorDeArchivos()),"/*");
+        context.addServlet(new ServletHolder(new PrincipalLOC()),"/*");
         server.start();
         server.join();
     }     
 }
+
+//Error de cast con iterator si hacer next
